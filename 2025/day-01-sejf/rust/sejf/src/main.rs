@@ -34,11 +34,13 @@ impl Default for SejfDialNum {
     }
 }
 
+#[derive(Debug, PartialEq, Eq)]
 enum Direction {
     Right,
     Left,
 }
 
+#[derive(Debug, PartialEq, Eq)]
 struct Rotation {
     direction: Direction,
     distance: SejfDialNum,
@@ -81,14 +83,8 @@ impl Default for Rotation {
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Default)]
 struct SejfDialZeroCounter(u32);
-
-impl Default for SejfDialZeroCounter {
-    fn default() -> Self {
-        SejfDialZeroCounter(0)
-    }
-}
 
 impl SejfDialZeroCounter {
     fn count_zeros(&mut self, sejf_dial_num: &SejfDialNum) {
@@ -106,22 +102,16 @@ fn main() {
 mod test {
     use super::*;
 
-    // Safe dial number can't be more than 99
-    #[test]
-    #[should_panic(expected = "Out of scope")]
-    fn test_dial_num_scope() {
-        // todo place fn later
-        let sejf_num = SejfDialNum(100);
-    }
-
     // Test if the rotation works
     #[test]
     fn test_rotation() {
-        let diall_num = SejfDialNum(11);
+        let mut diall_num = SejfDialNum(11);
         let rotation = Rotation {
             direction: Direction::Right,
             distance: SejfDialNum(8),
         };
+
+        diall_num.rotate_sejf_dial(&rotation);
 
         // todo place fn later
         let res = diall_num;
@@ -131,35 +121,53 @@ mod test {
     #[test]
     fn test_rotation_circle_corssing() {
         let mut diall_num = SejfDialNum(5);
+
         let first_rotation = Rotation {
             direction: Direction::Left,
             distance: SejfDialNum(10),
         };
 
-        // todo place fn later
+        // rotation that cross zero from a „possitive” num side
+        diall_num.rotate_sejf_dial(&first_rotation);
+
         let res = diall_num.clone();
         assert_eq!(res, SejfDialNum(95));
 
+        // rotation that move to 0 from a „negative” num side
         let second_rotation = Rotation {
             direction: Direction::Right,
             distance: SejfDialNum(5),
         };
 
-        // todo place fn later
+        diall_num.rotate_sejf_dial(&second_rotation);
+
         let res = diall_num;
         assert_eq!(res, SejfDialNum(0));
     }
 
     #[test]
-    fn test_read_file_and_parse() {
-        let res = vec!["R0"];
+    fn test_rotation_parse() {
+        let doc_snip_zero = String::from("R0");
+
+        let res = Rotation::parse(doc_snip_zero);
 
         assert_eq!(
             res,
-            vec![
-                "L68", "L30", "R48", "L5", "R60", "L55", "L1", "L99", "R14", "L82",
-            ]
-        )
+            Rotation {
+                direction: Direction::Right,
+                distance: SejfDialNum(0),
+            }
+        );
+
+        let doc_snip_left = String::from("L40");
+
+        assert_eq!(
+            res,
+            Rotation {
+                direction: Direction::Left,
+                distance: SejfDialNum(40),
+            }
+        );
     }
 
     #[test]
@@ -169,7 +177,14 @@ mod test {
             "L68", "L30", "R48", "L5", "R60", "L55", "L1", "L99", "R14", "L82",
         ];
 
-        let mut res = DialZeroCounter(0);
-        assert_eq!(res, DialZeroCounter(3));
+        let mut res = SejfDialZeroCounter::default();
+        res.count_zeros(&SejfDialNum(40));
+        res.count_zeros(&SejfDialNum(25));
+        res.count_zeros(&SejfDialNum(0));
+        res.count_zeros(&SejfDialNum(0));
+        res.count_zeros(&SejfDialNum(65));
+        res.count_zeros(&SejfDialNum(0));
+
+        assert_eq!(res, SejfDialZeroCounter(3));
     }
 }
