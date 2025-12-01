@@ -4,18 +4,21 @@ trait Input {
     fn read_a_document(path: &str) -> Self;
 }
 
+#[derive(Debug, PartialEq, Eq)]
 struct CrackedCode(u32);
 
+#[derive(Debug, PartialEq, Eq)]
 struct TheAttachedDocument(String);
 
 impl TheAttachedDocument {
-    fn crack_the_code(doc: String) -> CrackedCode {
+    fn crack_the_code(self) -> CrackedCode {
         let mut num_of_zeros = SejfDialZeroCounter::default();
+        let mut sejf_dial_num = SejfDialNum::default();
+
+        let doc = self.0;
 
         for line in doc.lines() {
             let rote = Rotation::parse(line);
-            let mut sejf_dial_num = SejfDialNum::default();
-
             sejf_dial_num.rotate_sejf_dial(&rote);
 
             num_of_zeros.count_zeros(&sejf_dial_num);
@@ -207,9 +210,27 @@ mod test {
     }
 
     #[test]
-    fn test() {
-        let routes = vec![
+    fn test_read_file() {
+        let path = "./test";
+        let res = TheAttachedDocument::read_a_document(path);
+
+        assert_eq!(
+            res,
+            TheAttachedDocument("L68\nL30\nR48\nL5\nR60\nL55\nL1\nL99\nR14\nL82\n".to_string())
+        );
+    }
+
+    #[test]
+    fn test_crach_the_code() {
+        /* let routes = vec![
             "L68", "L30", "R48", "L5", "R60", "L55", "L1", "L99", "R14", "L82",
-        ];
+        ]; */
+
+        let path = "./test";
+        let doc = TheAttachedDocument::read_a_document(path);
+        let the_cracked_code = doc.crack_the_code();
+
+        let res = the_cracked_code;
+        assert_eq!(res, CrackedCode(3));
     }
 }
