@@ -1,0 +1,21 @@
+const ŹRÓDŁO_MAPY_LABOLATORIUM: &str = "./input";
+
+struct MapaLabolatorium{
+    szerokość: usize,
+    wysokość: usize,
+}
+
+impl MapaLabolatorium {
+    fn new(źródo_mapy: &str) -> Self {
+        Self { wysokość, szerokość }
+    }
+}
+
+enum TwórNaMapie {
+    strażnik,
+    przeszkoda,
+}
+
+struct AsciiMap<const WIDTH: usize, const HEIGHT: usize> {
+    grid: [[char; WIDTH]; HEIGHT], // Tablica statyczna z ustalonymi rozmiarami
+}

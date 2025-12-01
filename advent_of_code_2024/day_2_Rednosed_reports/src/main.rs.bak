@@ -1,0 +1,24 @@
+use std::fs::File;
+use std::io::{ self, BufRead };
+
+fn main() {
+    let ścieżka_do_sprawozdań: &str = "./zapiski/sprawozdania_o_poziomach";
+    let sprawozdania: File = File::open(ścieżka_do_sprawozdań)
+        .expect("Nie można odnaleźć sprawozdania. Sprawozdanie powinno się znajdować w miejscu: ./zapiski/sprawozdania_o_poziomach");
+
+    let czytnik_sprawozdań: io::BufReader<File> = io::BufReader::new(sprawozdania);
+
+    for (liczba_porządkowa, wiersz) in czytnik_sprawozdań.lines().enumerate() {
+        let wiersz: String = wiersz.expect("Nie udało się wczytać wiersza");
+        let bezpieczne_sprawozdania: u16;
+        
+        // wyodrębnianie wiersza liczb do tablicy
+        let sprawozdanie: Result<Vec<u8>, _> = wiersz
+            .split_whitespace()
+            .map(|poziom| poziom.parse::<u8>())
+            .collect();
+
+
+        println!("Linia: {}: {}", liczba_porządkowa + 1, wiersz);
+    }
+}

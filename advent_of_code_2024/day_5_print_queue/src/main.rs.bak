@@ -1,0 +1,6 @@
+fn main() {
+     const ŚCIEŻKA_DO_POLECEŃ_DRUKARKI: &str = "./input";
+
+     let polecenia = PoleceniaDoDrukarki.nowy(ŚCIEŻKA_DO_POLECEŃ_DRUKARKI);
+     println!("Cześć!");
+}

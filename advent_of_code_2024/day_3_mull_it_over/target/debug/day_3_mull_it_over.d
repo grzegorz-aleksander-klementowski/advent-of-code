@@ -1,0 +1,1 @@
+/home/klemensgak/Pisma/prace/rust/rust_excercises/advent_of_code_2024/day_3_mull_it_over/target/debug/day_3_mull_it_over: /home/klemensgak/Pisma/prace/rust/rust_excercises/advent_of_code_2024/day_3_mull_it_over/src/main.rs

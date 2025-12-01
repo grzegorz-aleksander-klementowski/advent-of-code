@@ -1,0 +1,1 @@
+/home/klemensgak/Pisma/prace/rust/rust_excercises/advent_of_code_2024/day_1_historian_hysteria/target/debug/day_1_historian_hysteria: /home/klemensgak/Pisma/prace/rust/rust_excercises/advent_of_code_2024/day_1_historian_hysteria/src/main.rs

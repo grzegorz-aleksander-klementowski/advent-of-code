@@ -1,0 +1,4 @@
+fn main() {
+    const WYSZUKIWANE_SŁOWO: &str = "XMAS";
+}
+

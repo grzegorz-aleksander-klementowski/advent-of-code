@@ -1,0 +1,58 @@
+use std::io;
+
+
+struct Wzorzec_instrukcji_mnożnika {
+    nazwa: String,
+    otwierający_znak_argumentu: char,
+    liczba_x: usize,
+    oddzielnik: char,
+    liczba_y: usize,
+    zamykający_znak_wzorca: char,
+}
+
+impl Default for Wzorzec_instrukcji_mnożnika {
+    fn default() -> Self {
+        Wzorzec_instrukcji_mnożnika {
+            nazwa: String::from("mut"),
+            otwierający_znak_argumentu: '(',
+            liczba_x: 0,
+            oddzielnik: ',',
+            liczba_y: 0,
+            zamykający_znak_wzorca: ')',
+        }
+    }
+}
+
+impl Wzorzec_instrukcji_mnożnika {
+    fn new(
+        nazwa: String,
+        otwierający_znak_argumentu: char,
+        liczba_x: usize,
+        oddzielnik: char,
+        liczba_y: usize,
+        zamykający_znak_wzorca: char,
+        ) -> Self {
+        Wzorzec_instrukcji_mnożnika { 
+            nazwa, 
+            otwierający_znak_argumentu, 
+            liczba_x, 
+            oddzielnik, 
+            liczba_y, 
+            zamykający_znak_wzorca,
+        }
+    }
+
+    fn mnóż(&self) -> usize {
+        self.liczba_x * self.liczba_y
+    }
+
+    fn znajdź_mnożnik_napisie(&self, napis: &str) -> usize {
+        let początkowy_wzorzec_instrukcji_mnożnika: String = format!("{}{}", self.nazwa, self.otwierający_znak_argumentu);
+        if let Some(wskaźnik_na_początek_wz_mnożnika) = napis.find(początkowy_wzorzec_instrukcji_mnożnika) {
+            return wskaźnik_na_początek_wz_mnożnika;
+        }
+        else {
+           return 0; 
+        }
+    }
+}

@@ -1,0 +1,1 @@
+/home/klemensgak/Pisma/prace/rust/rust_excercises/advent_of_code_2024/day_4_ceres_search/target/debug/day_4_ceres_search: /home/klemensgak/Pisma/prace/rust/rust_excercises/advent_of_code_2024/day_4_ceres_search/src/main.rs

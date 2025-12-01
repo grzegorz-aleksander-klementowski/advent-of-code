@@ -1,0 +1,69 @@
+use std::fs::File;
+use std::io::{ self, BufRead };
+
+
+
+const WYSZUKIWANE_SŁOWO: &str = "XMAS";
+const ŚCIEŻKA_DOWYKREŚLANKI_SUROWEJ: &str = "./input";
+
+
+trait Czytacz<T> {
+    fn czytnik_zapisku(&self) -> io::BufReader<File>;
+    fn dostać_ilość_kolumn(zasobnik: io::BufReader<T>) -> usize;
+    fn dostać_ilość_wierszy(zasobnik: io::BufReader<T>) -> usize;
+}
+
+impl Czytacz<File> for Zapisek { 
+    fn czytnik_zapisku(&self) -> io::BufReader<File> {
+        let zapisek: File = File::open(self.ścieżka_do_zapisku).expect("Nie można odnaleźć zapisku.");
+        let czytnik_zapisku: io::BufReader<File> = io::BufReader::new(zapisek);
+        
+        return czytnik_zapisku;
+    }
+    
+    fn dostać_ilość_kolumn(zasobnik: io::BufReader<T>) -> usize {
+
+    }
+    fn dostać_ilość_wierszy(zasobnik: io::BufReader<T>) -> usize;
+    
+}
+
+struct Zapisek {
+    ścieżka_do_zapisku: &'static str,
+}
+
+impl Zapisek {
+    fn nowy( ścieżka_do_zapisku: &'static str ) -> Self {
+        Self { ścieżka_do_zapisku }
+    }
+}
+
+struct wykreślanka {
+    kolumn: &'static usize,
+    wierszy: &'static usize,
+}
+
+impl wykreślanka {
+    
+}
+
+impl wykreślanka {
+    fn stwórz(ilość_kolumn: usize, ilość_wierszy: usize) -> Self {
+        Self { ilość_kolumn, ilość_wierszy }
+    }
+
+    /*
+    fn macierz_generyczna<const WIERSZE: usize, const KOLUMNY: usize>(&self) -> [[char; KOLUMNY]; WIERSZE] {
+        return [['a'; &self.ilość_kolumn]; &self.ilość_wierszy];
+    }
+    */
+}
+
+/*
+trait wyszukaj_slowo_w_wykreślance {
+    //fn słowo_pionowo_w_przód(szkane_słowo: &str, wykreślanka: [[usize; WIERSZE]; KOLUMNY]) -> bool;
+    fn słowo_piodowo_do_tyłu(szkane_słowo: &str, wykreślanka) -> bool;
+    fn słowo_pionowo_z_góry_w_dół(szkane_słowo: &str, wykreślanka) -> bool;
+    fn słowo_pionowo_z_dołu_do_góry(szkane_słowo: &str, wykreślanka) -> bool;
+}
+*/

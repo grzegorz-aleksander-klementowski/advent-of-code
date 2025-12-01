@@ -1,0 +1,1 @@
+/home/klemensgak/Pisma/prace/rust/rust_excercises/advent_of_code_2024/day_6_guard_gallivant/target/debug/day_6_guard_gallivant: /home/klemensgak/Pisma/prace/rust/rust_excercises/advent_of_code_2024/day_6_guard_gallivant/src/main.rs
