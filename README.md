@@ -1,0 +1,1 @@
+# Advent of Code solutions in Rust (for now) across multiple years. Multi-year Advent of Code in Rust, ongoing. Planned to add Bash. Rust solutions for Advent of Code, past and current editions. Grinding Advent of Code in Rust, year by year.
