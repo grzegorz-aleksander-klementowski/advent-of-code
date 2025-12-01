@@ -119,6 +119,12 @@ impl SejfDialZeroCounter {
 
 fn main() {
     println!("Wesołych świąt!");
+
+    let path = "./src/input";
+    let doc = TheAttachedDocument::read_a_document(path);
+    let the_cracked_code = doc.crack_the_code();
+
+    println!("The code is: {the_cracked_code:?}");
 }
 
 #[cfg(test)]
