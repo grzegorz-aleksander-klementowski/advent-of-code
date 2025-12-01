@@ -4,7 +4,26 @@ trait Input {
     fn read_a_document(path: &str) -> Self;
 }
 
+struct CrackedCode(u32);
+
 struct TheAttachedDocument(String);
+
+impl TheAttachedDocument {
+    fn crack_the_code(doc: String) -> CrackedCode {
+        let mut num_of_zeros = SejfDialZeroCounter::default();
+
+        for line in doc.lines() {
+            let rote = Rotation::parse(line);
+            let mut sejf_dial_num = SejfDialNum::default();
+
+            sejf_dial_num.rotate_sejf_dial(&rote);
+
+            num_of_zeros.count_zeros(&sejf_dial_num);
+        }
+
+        CrackedCode(num_of_zeros.0)
+    }
+}
 
 impl Input for TheAttachedDocument {
     fn read_a_document(path: &str) -> Self {
@@ -54,7 +73,8 @@ impl Rotation {
         }
     }
 
-    fn parse(doc_snippet: String) -> Rotation {
+    fn parse(doc_snippet: &str) -> Rotation {
+        doc_snippet.to_string();
         let mut snippet_chars = doc_snippet.chars();
 
         let direction = match snippet_chars.next().expect("Here should be a char!") {
@@ -147,7 +167,7 @@ mod test {
 
     #[test]
     fn test_rotation_parse() {
-        let doc_snip_zero = String::from("R0");
+        let doc_snip_zero = "R0";
 
         let res = Rotation::parse(doc_snip_zero);
 
@@ -159,7 +179,8 @@ mod test {
             }
         );
 
-        let doc_snip_left = String::from("L40");
+        let doc_snip_left = "L40";
+        let res = Rotation::parse(doc_snip_left);
 
         assert_eq!(
             res,
@@ -173,9 +194,6 @@ mod test {
     #[test]
     fn test_zeros_counter() {
         // todo add fn later
-        let routes = vec![
-            "L68", "L30", "R48", "L5", "R60", "L55", "L1", "L99", "R14", "L82",
-        ];
 
         let mut res = SejfDialZeroCounter::default();
         res.count_zeros(&SejfDialNum(40));
@@ -186,5 +204,12 @@ mod test {
         res.count_zeros(&SejfDialNum(0));
 
         assert_eq!(res, SejfDialZeroCounter(3));
+    }
+
+    #[test]
+    fn test() {
+        let routes = vec![
+            "L68", "L30", "R48", "L5", "R60", "L55", "L1", "L99", "R14", "L82",
+        ];
     }
 }
