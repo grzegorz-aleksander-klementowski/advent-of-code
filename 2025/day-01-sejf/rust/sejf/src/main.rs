@@ -113,6 +113,7 @@ impl SejfDialZeroCounter {
     fn count_zeros(&mut self, sejf_dial_num: &SejfDialNum) {
         if sejf_dial_num.0 == 0 {
             self.0 += 1;
+        } else {
         }
     }
 }
