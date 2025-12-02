@@ -1,4 +1,4 @@
-use std::{ops::Range, usize};
+use std::{ops::RangeInclusive, usize};
 
 trait Input: Sized {
     fn load_into_vec(path_to_file: &str) -> Vec<Self>;
@@ -26,10 +26,7 @@ impl Input for IdRange {
 impl IdRange {
     // constructor for easier building
     fn new(first_id: ProductId, last_id: ProductId) -> Self {
-        Self {
-            first_id: ProductId(0),
-            last_id: ProductId(1),
-        }
+        Self { first_id, last_id }
     }
 
     // parse a snippet text to a struct of Range
@@ -43,22 +40,23 @@ impl IdRange {
             .trim()
             .parse()
             .expect("Can't parse text into a number!");
+
         IdRange::new(ProductId(first_id), ProductId(last_id))
     }
 
     // transport a range into a usefull std::ops::Range type
-    fn transform_to_ops_range(self) -> Range<usize> {
+    fn transform_to_ops_range(self) -> RangeInclusive<usize> {
         let start = self.first_id;
         let end = self.last_id;
-        (start.0..end.0)
+        (start.0..=end.0)
     }
 }
 
 impl Default for IdRange {
     fn default() -> Self {
         Self {
-            first_id: ProductId(0),
-            last_id: ProductId(1),
+            first_id: ProductId(2),
+            last_id: ProductId(999),
         }
     }
 }
@@ -100,6 +98,12 @@ impl IdValidity {
             IdValidity::Valid(_) => value,
             IdValidity::Invalid(id) => value + id.0,
         }
+    }
+
+    fn add_up_invalid_ids_from_file(path: &str) -> usize {
+        let loaded_file_into_vec = IdRange::load_into_vec(path);
+
+        todo!()
     }
 }
 
