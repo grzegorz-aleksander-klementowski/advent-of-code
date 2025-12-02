@@ -1,7 +1,7 @@
-use std::ops::Range;
+use std::{ops::Range, usize};
 
-trait Input {
-    fn load_ids_range() -> Vec<IdRange>;
+trait Input: Sized {
+    fn load_into_vec(path_to_file: &str) -> Vec<Self>;
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -10,13 +10,59 @@ struct IdRange {
     last_id: ProductId,
 }
 
+impl Input for IdRange {
+    fn load_into_vec(path: &str) -> Vec<Self> {
+        let file_cont = std::fs::read_to_string(path).expect("Cannot open the file! ");
+
+        todo!()
+    }
+}
+
+impl IdRange {
+    fn new(first_id: ProductId, last_id: ProductId) -> Self {
+        Self {
+            first_id: ProductId(0),
+            last_id: ProductId(1),
+        }
+    }
+
+    fn parse(text: &str) -> Self {
+        todo!()
+    }
+
+    fn transform_to_ops_range(self) -> Range<usize> {
+        let start = self.first_id;
+        let end = self.last_id;
+        (start.0..end.0)
+    }
+}
+
+impl Default for IdRange {
+    fn default() -> Self {
+        Self {
+            first_id: ProductId(0),
+            last_id: ProductId(1),
+        }
+    }
+}
+
 #[derive(Debug, PartialEq, Eq, Clone)]
 struct ProductId(usize);
-
+impl ProductId {
+    fn identify_id_validity(self) -> IdValidity {
+        todo!()
+    }
+}
 #[derive(Debug, PartialEq, Eq)]
 enum IdValidity {
     Valid(ProductId),
     Invalid(ProductId),
+}
+
+impl IdValidity {
+    fn add_up_invalid_ids(&self, value: usize) -> usize {
+        todo!()
+    }
 }
 
 fn main() {
@@ -28,33 +74,12 @@ fn main() {
 #[cfg(test)]
 mod test {
     use super::*;
-    // test parsing of text to range struct
-    #[test]
-    fn test_parsing() {
-        let example = "11-22";
-        let res = IdRange {
-            first_id: ProductId(0),
-            last_id: ProductId(0),
-        };
-
-        // fn'll place here
-
-        assert_eq!(
-            res,
-            IdRange {
-                first_id: ProductId(11),
-                last_id: ProductId(22),
-            }
-        )
-    }
 
     //test if the program load the file into the structues
     fn test_load_file_and_parse() {
         let path = "test";
 
-        // fn'll place here
-
-        let res: Vec<IdRange> = Vec::new();
+        let res: Vec<IdRange> = IdRange::load_into_vec(path);
         assert_eq!(
             res,
             vec![
@@ -93,19 +118,35 @@ mod test {
             ]
         )
     }
+
+    // test parsing of text to range struct
+    #[test]
+    fn test_parsing() {
+        let example = "11-22";
+        let res = IdRange::parse(example);
+
+        assert_eq!(
+            res,
+            IdRange {
+                first_id: ProductId(11),
+                last_id: ProductId(22),
+            }
+        )
+    }
+
     #[test]
     fn test_id_validity() {
         let inv_ids = [ProductId(55), ProductId(7474), ProductId(123123)];
         let valid_id = ProductId(101);
 
-        // test if detect invalid ids
+        // test if detect an invalid ids
         for id in inv_ids {
-            let res = IdValidity::Valid(id.clone()); // fn'll place here
-            assert_eq!(res, IdValidity::Invalid(id));
+            let res = id.clone().identify_id_validity(); // fn'll place here
+            assert_eq!(res, IdValidity::Invalid(id.clone()));
         }
 
         // test if detect a valid id
-        let res = IdValidity::Invalid(ProductId(101)); // fn'll place here
+        let res = valid_id.clone().identify_id_validity(); // fn'll place here
         assert_eq!(res, IdValidity::Valid(valid_id));
     }
 
@@ -148,26 +189,51 @@ mod test {
         ];
 
         // checking exceptions – if 2
-        let range = &id_ranges[0];
-        // fn'll place here
-        let res = 0;
+        let range = id_ranges[0].clone().transform_to_ops_range();
+        let mut res = 0;
+        for id in range {
+            let id = ProductId(id);
+            match id.identify_id_validity() {
+                IdValidity::Valid(_) => continue,
+                IdValidity::Invalid(_) => res += 1,
+            }
+        }
         assert_eq!(res, 2);
 
         // checking usual in the case
-        let range = &id_ranges[1];
-        // fn'll place here
-        let res = 0;
+        let range = id_ranges[1].clone().transform_to_ops_range();
+        let mut res = 0;
+        for id in range {
+            let id = ProductId(id);
+            match id.identify_id_validity() {
+                IdValidity::Valid(_) => continue,
+                IdValidity::Invalid(_) => res += 1,
+            }
+        }
         assert_eq!(res, 1);
 
         // checking exceptions – if 0
-        let range = &id_ranges[5];
-        // fn'll place here
-        let res = 0;
+        let range = id_ranges[5].clone().transform_to_ops_range();
+        let mut res = 0;
+        for id in range {
+            let id = ProductId(id);
+            match id.identify_id_validity() {
+                IdValidity::Valid(_) => continue,
+                IdValidity::Invalid(_) => res += 1,
+            }
+        }
         assert_eq!(res, 0);
 
-        let count: usize = 0;
+        let mut count: usize = 0;
         for range in &id_ranges {
-            // fn'll place here
+            let range = range.clone().transform_to_ops_range();
+            for id in range {
+                let id = ProductId(id);
+                match id.identify_id_validity() {
+                    IdValidity::Valid(_) => continue,
+                    IdValidity::Invalid(_) => count += 1,
+                }
+            }
         }
 
         assert_eq!(count, 8);
@@ -175,11 +241,21 @@ mod test {
 
     #[test]
     fn test_adding_up_invalids_ids() {
-        let inv_ids = [11, 22, 99, 1010, 1188511885, 222222, 446446, 38593859];
+        let inv_ids = [
+            IdValidity::Invalid(ProductId(11)),
+            IdValidity::Invalid(ProductId(22)),
+            IdValidity::Invalid(ProductId(99)),
+            IdValidity::Invalid(ProductId(1010)),
+            IdValidity::Invalid(ProductId(1188511885)),
+            IdValidity::Invalid(ProductId(222222)),
+            IdValidity::Invalid(ProductId(446446)),
+            IdValidity::Invalid(ProductId(38593859)),
+        ];
 
-        // fn'll place here
-
-        let res = 0;
+        let mut res: usize = 0;
+        for id in inv_ids {
+            res = id.add_up_invalid_ids(res);
+        }
 
         assert_eq!(res, 1227775554);
     }
