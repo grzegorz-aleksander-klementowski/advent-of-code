@@ -14,11 +14,17 @@ impl Input for IdRange {
     fn load_into_vec(path: &str) -> Vec<Self> {
         let file_cont = std::fs::read_to_string(path).expect("Cannot open the file! ");
 
-        todo!()
+        let mut range_vec = Vec::new();
+        for range_snip in file_cont.split(',').into_iter() {
+            let range = Self::parse(range_snip);
+            range_vec.push(range);
+        }
+        range_vec
     }
 }
 
 impl IdRange {
+    // constructor for easier building
     fn new(first_id: ProductId, last_id: ProductId) -> Self {
         Self {
             first_id: ProductId(0),
@@ -26,10 +32,21 @@ impl IdRange {
         }
     }
 
+    // parse a snippet text to a struct of Range
     fn parse(text: &str) -> Self {
-        todo!()
+        let ids_vec: Vec<&str> = text.split('-').collect();
+        let first_id: usize = ids_vec[0]
+            .trim()
+            .parse()
+            .expect("Can't parse text into a number!");
+        let last_id: usize = ids_vec[1]
+            .trim()
+            .parse()
+            .expect("Can't parse text into a number!");
+        IdRange::new(ProductId(first_id), ProductId(last_id))
     }
 
+    // transport a range into a usefull std::ops::Range type
     fn transform_to_ops_range(self) -> Range<usize> {
         let start = self.first_id;
         let end = self.last_id;
@@ -46,13 +63,30 @@ impl Default for IdRange {
     }
 }
 
+// Type of product Id
 #[derive(Debug, PartialEq, Eq, Clone)]
 struct ProductId(usize);
 impl ProductId {
     fn identify_id_validity(self) -> IdValidity {
-        todo!()
+        let id_as_str = self.0.to_string().clone();
+        let id_len = id_as_str.len();
+        let half = &id_as_str.len() / 2;
+
+        if (id_len % 2) == 0 {
+            let fist_half = id_as_str[..half].to_string();
+            let second_half = id_as_str[half..].to_string();
+            if fist_half == second_half {
+                IdValidity::Invalid(self)
+            } else {
+                IdValidity::Valid(self)
+            }
+        } else {
+            IdValidity::Valid(self)
+        }
     }
 }
+
+// Enumeration to identify a valid or an invalid id
 #[derive(Debug, PartialEq, Eq)]
 enum IdValidity {
     Valid(ProductId),
@@ -60,8 +94,12 @@ enum IdValidity {
 }
 
 impl IdValidity {
+    // Adding up the invalid ids (THE GOAL OF 1ST PART OF THE TASK)
     fn add_up_invalid_ids(&self, value: usize) -> usize {
-        todo!()
+        match self {
+            IdValidity::Valid(_) => value,
+            IdValidity::Invalid(id) => value + id.0,
+        }
     }
 }
 
