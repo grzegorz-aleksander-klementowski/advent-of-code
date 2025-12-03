@@ -15,7 +15,7 @@ impl Input for IdRange {
         let file_cont = std::fs::read_to_string(path).expect("Cannot open the file! ");
 
         let mut range_vec = Vec::new();
-        for range_snip in file_cont.split(',').into_iter() {
+        for range_snip in file_cont.split(',') {
             let range = Self::parse(range_snip);
             range_vec.push(range);
         }
@@ -48,7 +48,7 @@ impl IdRange {
     fn transform_to_ops_range(self) -> RangeInclusive<usize> {
         let start = self.first_id;
         let end = self.last_id;
-        (start.0..=end.0)
+        start.0..=end.0
     }
 }
 
@@ -103,12 +103,29 @@ impl IdValidity {
     fn add_up_invalid_ids_from_file(path: &str) -> usize {
         let loaded_file_into_vec = IdRange::load_into_vec(path);
 
-        todo!()
+        let mut added_inv_ids: usize = 0;
+
+        for range in loaded_file_into_vec {
+            let ids_range_as_num = range.transform_to_ops_range();
+
+            for id_num in ids_range_as_num {
+                let id = ProductId(id_num);
+                match id.identify_id_validity() {
+                    IdValidity::Valid(_) => continue,
+                    IdValidity::Invalid(id) => {
+                        added_inv_ids += IdValidity::Invalid(id).add_up_invalid_ids(added_inv_ids)
+                    }
+                };
+            }
+        }
+
+        added_inv_ids
     }
 }
 
 fn main() {
-    println!("Hello, world!");
+    let added_inv_ids = IdValidity::add_up_invalid_ids_from_file("./input");
+    println!("Adding up all the invalid IDs produces: {added_inv_ids}");
 }
 
 // --- tests --- \\
@@ -118,6 +135,7 @@ mod test {
     use super::*;
 
     //test if the program load the file into the structues
+    #[test]
     fn test_load_file_and_parse() {
         let path = "test";
 
@@ -130,7 +148,7 @@ mod test {
                     last_id: ProductId(22),
                 },
                 IdRange {
-                    first_id: ProductId(99),
+                    first_id: ProductId(95),
                     last_id: ProductId(115),
                 },
                 IdRange {
@@ -156,6 +174,19 @@ mod test {
                 IdRange {
                     first_id: ProductId(38593856),
                     last_id: ProductId(38593862),
+                },
+                // ----
+                IdRange {
+                    first_id: ProductId(565653),
+                    last_id: ProductId(565659),
+                },
+                IdRange {
+                    first_id: ProductId(824824821),
+                    last_id: ProductId(824824827),
+                },
+                IdRange {
+                    first_id: ProductId(2121212118),
+                    last_id: ProductId(2121212124),
                 },
             ]
         )
