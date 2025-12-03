@@ -13,17 +13,24 @@ enum BatteryErrors {
 
 struct BateryBank(Vec<Batery>);
 
+impl Input for BateryBank {
+    fn load_batery_info(path: &str) -> Vec<BateryBank> {
+        let load_to_str: Vec<&str> = std::fs::read_to_string(path)
+            .expect("Can't read the file!")
+            .lines()
+            .collect();
+
+        todo!()
+    }
+}
+
 #[derive(Debug, PartialEq, Eq)]
 struct Batery {
     joltage: usize,
 }
 
-impl Input for Batery {
-    fn load_batery_info(path: &str) -> Vec<BateryBank> {
-        let load_to_str = std::fs::read_to_string(path);
-
-        todo!()
-    }
+impl Batery {
+    fn new(digit: usize) {}
 }
 
 impl Validate for Batery {
