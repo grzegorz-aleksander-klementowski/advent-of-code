@@ -113,7 +113,10 @@ impl IdValidity {
                 match id.identify_id_validity() {
                     IdValidity::Valid(_) => continue,
                     IdValidity::Invalid(id) => {
-                        added_inv_ids += IdValidity::Invalid(id).add_up_invalid_ids(added_inv_ids)
+                        println!("\n\nID: {id:?}");
+                        println!("przed dodaniem: {added_inv_ids:?}");
+                        added_inv_ids = IdValidity::Invalid(id).add_up_invalid_ids(added_inv_ids);
+                        println!("pododaniu: {added_inv_ids:?}");
                     }
                 };
             }
@@ -124,7 +127,7 @@ impl IdValidity {
 }
 
 fn main() {
-    let added_inv_ids = IdValidity::add_up_invalid_ids_from_file("./input");
+    let added_inv_ids = IdValidity::add_up_invalid_ids_from_file("./test");
     println!("Adding up all the invalid IDs produces: {added_inv_ids}");
 }
 
