@@ -1,4 +1,4 @@
-trait Input {
+/* trait Input {
     fn load_batery_info(path: &str) -> Vec<BateryBank>;
 }
 
@@ -50,4 +50,4 @@ mod test {
         assert_eq!(res, Err(BatteryErrors::IncorrectLabel));
     }
 }
-
+ */
