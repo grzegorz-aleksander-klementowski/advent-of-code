@@ -55,8 +55,8 @@ impl IdRange {
 impl Default for IdRange {
     fn default() -> Self {
         Self {
-            first_id: ProductId(2),
-            last_id: ProductId(999),
+            first_id: ProductId(0),
+            last_id: ProductId(1),
         }
     }
 }
@@ -81,6 +81,30 @@ impl ProductId {
         } else {
             IdValidity::Valid(self)
         }
+    }
+    fn new_identify_id_validity(self) -> IdValidity {
+        let s = self.0.to_string();
+        let n = s.len();
+
+        // Szukamy dowolnej długości bloku od 1 do n/2
+        for block_len in 1..=n / 2 {
+            if n % block_len != 0 {
+                continue; // tylko bloki, które dzielą długość całości
+            }
+
+            let block = &s[..block_len];
+
+            // Sprawdzamy, czy s = block powtórzone (n / block_len) razy
+            if s.chars()
+                .collect::<Vec<_>>()
+                .chunks(block_len)
+                .all(|chunk| chunk.iter().collect::<String>() == block)
+            {
+                return IdValidity::Invalid(self);
+            }
+        }
+
+        IdValidity::Valid(self)
     }
 }
 
@@ -121,11 +145,36 @@ impl IdValidity {
 
         added_inv_ids
     }
+
+    fn new_add_up_invalid_ids_from_file(path: &str) -> usize {
+        let loaded_file_into_vec = IdRange::load_into_vec(path);
+
+        let mut added_inv_ids: usize = 0;
+
+        for range in loaded_file_into_vec {
+            let ids_range_as_num = range.transform_to_ops_range();
+
+            for id_num in ids_range_as_num {
+                let id = ProductId(id_num);
+                match id.new_identify_id_validity() {
+                    IdValidity::Valid(_) => continue,
+                    IdValidity::Invalid(id) => {
+                        added_inv_ids = IdValidity::Invalid(id).add_up_invalid_ids(added_inv_ids);
+                    }
+                };
+            }
+        }
+
+        added_inv_ids
+    }
 }
 
 fn main() {
     let added_inv_ids = IdValidity::add_up_invalid_ids_from_file("./input");
     println!("Adding up all the invalid IDs produces: {added_inv_ids}");
+
+    let new_added_inv_ids = IdValidity::new_add_up_invalid_ids_from_file("./input");
+    println!("Adding up all the invalid IDs produces: {new_added_inv_ids}");
 }
 
 // --- tests --- \\
