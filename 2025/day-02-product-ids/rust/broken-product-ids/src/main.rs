@@ -332,4 +332,11 @@ mod test {
 
         assert_eq!(res, 1227775554);
     }
+
+    #[test]
+    fn test_add_up_invalid_ids_from_file() {
+        let file_path = "./test";
+        let res = IdValidity::add_up_invalid_ids_from_file(file_path);
+        assert_eq!(res, 1227775554);
+    }
 }
